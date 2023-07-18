@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using backend.Models;
+using GigaChat.Models;
 
-namespace backend.Controllers;
+namespace GigaChat.Controllers;
 
 public class HomeController : Controller
 {

@@ -1,4 +1,4 @@
-namespace backend.Models;
+namespace GigaChat.Models;
 
 public class ErrorViewModel
 {
