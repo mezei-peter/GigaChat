@@ -25,8 +25,8 @@ public class UserController : Controller
         return Ok(_dbContext.Users);
     }
 
-    [HttpGet]
-    public IActionResult GetByJwt(string id)
+    [HttpGet, Route("/User/GetByJwt/{token}")]
+    public IActionResult GetByJwt(string token)
     {
         try
         {
@@ -34,7 +34,7 @@ public class UserController : Controller
                                             .WithAlgorithm(new HMACSHA256Algorithm())
                                             .WithSecret("TEST_SECRET")
                                             .MustVerifySignature()
-                                            .Decode(id);
+                                            .Decode(token);
             return Ok(userDetails);
         }
         catch (Exception e)
