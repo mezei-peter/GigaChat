@@ -30,15 +30,17 @@ public class UserController : Controller
     {
         try
         {
-            string userDetails = JwtBuilder.Create()
+            IDictionary<string, object> details = JwtBuilder.Create()
                                             .WithAlgorithm(new HMACSHA256Algorithm())
                                             .WithSecret("TEST_SECRET")
                                             .MustVerifySignature()
-                                            .Decode(token);
-            return Ok(userDetails);
+                                            .Decode<IDictionary<string, object>>(token);
+            PublicUserDetails publicUserDetails = new (Guid.Parse(details["Id"].ToString()), details["UserName"].ToString());
+            return Ok(publicUserDetails);
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return BadRequest();
         }
     }
