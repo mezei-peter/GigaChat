@@ -43,7 +43,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     public IActionResult Login([FromBody] UsernameAndPassword userCredentials)
     {
         User user = _dbContext.Users
