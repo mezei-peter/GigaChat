@@ -28,12 +28,19 @@ public class UserController : Controller
     [HttpGet]
     public IActionResult GetByJwt(string id)
     {
-        string userDetails = JwtBuilder.Create()
-                                        .WithAlgorithm(new HMACSHA256Algorithm())
-                                        .WithSecret("TEST_SECRET")
-                                        .MustVerifySignature()
-                                        .Decode(id);
-        return Ok(userDetails);
+        try
+        {
+            string userDetails = JwtBuilder.Create()
+                                            .WithAlgorithm(new HMACSHA256Algorithm())
+                                            .WithSecret("TEST_SECRET")
+                                            .MustVerifySignature()
+                                            .Decode(id);
+            return Ok(userDetails);
+        }
+        catch (Exception e)
+        {
+            return BadRequest();
+        }
     }
 
     [HttpGet]

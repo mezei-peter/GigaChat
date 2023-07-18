@@ -22,9 +22,7 @@ function App() {
   }
 
   useEffect(() => {
-    //fetchUser().then(usr => setUser(usr));
-    setUser({ userName: "asd", id: "1a" });
-    //setUser(null);
+    fetchUser().then(usr => setUser(usr));
   }, []);
 
   return (
