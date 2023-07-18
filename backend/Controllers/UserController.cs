@@ -37,12 +37,15 @@ public class UserController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login([FromBody] UsernameAndPassword user)
+    public IActionResult Login([FromBody] UsernameAndPassword userCredentials)
     {
-        //TODO: Check if login credentials are valid
+        User user = _dbContext.Users
+                    .Where(user => userCredentials.UserName == user.UserName && userCredentials.Password == user.Password)
+                    .First();
         string token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())
                       .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds())
+                      .AddClaim("Id", user.Id.ToString())
                       .AddClaim("UserName", user.UserName)
                       .WithSecret("TEST_SECRET")
                       .Encode();
