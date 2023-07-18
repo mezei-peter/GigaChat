@@ -9,7 +9,7 @@ namespace GigaChat.Controllers;
 
 public class UserController : Controller
 {
-    private GigaChatDbContext _dbContext;
+    private readonly GigaChatDbContext _dbContext;
 
     public UserController(GigaChatDbContext dbContext)
     {
@@ -27,7 +27,7 @@ public class UserController : Controller
     {
         string userName = newUser.UserName;
         string password = newUser.Password;
-        User user = new User { Id = Guid.NewGuid(), UserName = userName, Password = password };
+        User user = new() { Id = Guid.NewGuid(), UserName = userName, Password = password };
         _dbContext.Add(user);
         _dbContext.SaveChanges();
         return Ok(user);
