@@ -37,7 +37,7 @@ public class UserController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login([FromBody] NewUser user)
+    public IActionResult Login([FromBody] UsernameAndPassword user)
     {
         //TODO: Check if login credentials are valid
         string token = JwtBuilder.Create()
@@ -50,7 +50,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public IActionResult PostNewUser([FromBody] NewUser newUser)
+    public IActionResult PostNewUser([FromBody] UsernameAndPassword newUser)
     {
         string userName = newUser.UserName;
         string password = newUser.Password;
