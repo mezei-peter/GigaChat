@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "./Components/Navbar";
+import EmptyPage from "./Components/EmptyPage";
 
 async function fetchUser(): Promise<User | null> {
   let jwt = localStorage.getItem("userToken");
@@ -13,6 +14,7 @@ async function fetchUser(): Promise<User | null> {
 
 function App() {
   let [user, setUser] = useState<User | null>(null);
+  let [page, setPage] = useState(<EmptyPage />);
 
   const logout = () => {
     localStorage.setItem("userToken", "");
@@ -26,8 +28,9 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <Navbar user={user} logout={logout} />
+    <div className="h-screen">
+      <Navbar user={user} logout={logout} setPage={setPage} />
+      {page}
     </div>
   );
 }
