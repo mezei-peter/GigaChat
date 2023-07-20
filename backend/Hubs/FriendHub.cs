@@ -31,6 +31,5 @@ public class FriendHub : Hub
             return;
         }
         await Groups.AddToGroupAsync(Context.ConnectionId, userName);
-        Console.WriteLine(userName + " added to their self-group");
     }
 }
