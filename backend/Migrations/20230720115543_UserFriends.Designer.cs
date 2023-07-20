@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backend.Migrations
 {
     [DbContext(typeof(GigaChatDbContext))]
-    [Migration("20230720115219_UserFriends")]
+    [Migration("20230720115543_UserFriends")]
     partial class UserFriends
     {
         /// <inheritdoc />
@@ -30,9 +30,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -40,24 +37,40 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.HasIndex("UserName")
                         .IsUnique();
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("GigaChat.Models.User", b =>
+            modelBuilder.Entity("UserUser", b =>
                 {
-                    b.HasOne("GigaChat.Models.User", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId");
+                    b.Property<Guid>("FriendRequestsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("FriendsId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("FriendRequestsId", "FriendsId");
+
+                    b.HasIndex("FriendsId");
+
+                    b.ToTable("UserUser");
                 });
 
-            modelBuilder.Entity("GigaChat.Models.User", b =>
+            modelBuilder.Entity("UserUser", b =>
                 {
-                    b.Navigation("Friends");
+                    b.HasOne("GigaChat.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("FriendRequestsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GigaChat.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("FriendsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
