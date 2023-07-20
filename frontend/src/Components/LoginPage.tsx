@@ -9,7 +9,10 @@ function LoginPage() {
         const data = JSON.stringify({ userName: userName, password: password });
         fetch("/api/User/Login", { method: "POST", headers: { 'Content-type': 'application/json' }, body: data })
             .then(res => res.text())
-            .then(data => localStorage.setItem("userToken", data));
+            .then(data => {
+                localStorage.setItem("userToken", data);
+                window.location.reload();
+            });
     };
 
     return (
