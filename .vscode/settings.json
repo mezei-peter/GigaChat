@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "backend/backend.sln"
+    "dotnet.defaultSolution": "backend/backend.sln",
+    "editor.acceptSuggestionOnCommitCharacter": false
 }
