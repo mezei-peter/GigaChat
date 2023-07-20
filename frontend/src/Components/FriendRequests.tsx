@@ -39,9 +39,10 @@ function FriendRequests({ friendConnection, friendRequests, setFriendRequests }:
             <ul className="flex flex-col">
                 {friendRequests.map(usr => {
                     return (
-                        <li key={usr.id} className="flex flex-row justify-between">
-                            <div><span className="font-bold">{usr.userName}</span> wants to be your friend</div>
-                            <button className="btn btn-blue" type="button">Accept</button>
+                        <li key={usr.id} className="m-auto">
+                            <button className="btn btn-blue !font-normal m-1">
+                                Accept <span className="font-bold">{usr.userName}</span>'s friend request
+                            </button>
                         </li>
                     )
                 })}
