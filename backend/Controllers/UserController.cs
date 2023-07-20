@@ -26,6 +26,7 @@ public class UserController : Controller
     }
 
     [HttpGet, Route("/User/GetByJwt/{token}")]
+    [Obsolete]
     public IActionResult GetByJwt(string token)
     {
         try
@@ -35,7 +36,7 @@ public class UserController : Controller
                                             .WithSecret("TEST_SECRET")
                                             .MustVerifySignature()
                                             .Decode<IDictionary<string, object>>(token);
-            PublicUserDetails publicUserDetails = new (Guid.Parse(details["Id"].ToString()), details["UserName"].ToString());
+            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"].ToString()), details["UserName"].ToString());
             return Ok(publicUserDetails);
         }
         catch (Exception e)
@@ -46,6 +47,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
+    [Obsolete]
     public IActionResult Login([FromBody] UsernameAndPassword userCredentials)
     {
         User user = _dbContext.Users
@@ -66,7 +68,7 @@ public class UserController : Controller
     {
         string userName = newUser.UserName;
         string password = newUser.Password;
-        User user = new() { Id = Guid.NewGuid(), UserName = userName, Password = password };
+        User user = new() { UserName = userName, Password = password };
         _dbContext.Add(user);
         _dbContext.SaveChanges();
         return Ok(user);
