@@ -20,4 +20,6 @@ public class User
 
     [Required]
     public string Password { get; set; } = string.Empty;
+
+    public ICollection<User> Friends { get; set; } = new HashSet<User>();
 }
