@@ -73,4 +73,27 @@ public class UserController : Controller
         _dbContext.SaveChanges();
         return Ok(user);
     }
+
+    [HttpGet, Route("/User/GetFriendRequests/{token}")]
+    [Obsolete]
+    public IActionResult GetFriendRequests(string token)
+    {
+        try
+        {
+            IDictionary<string, object> details = JwtBuilder.Create()
+                                            .WithAlgorithm(new HMACSHA256Algorithm())
+                                            .WithSecret("TEST_SECRET")
+                                            .MustVerifySignature()
+                                            .Decode<IDictionary<string, object>>(token);
+            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""),
+                details["UserName"]?.ToString() ?? "");
+            User user = _dbContext.Users.Where(u => publicUserDetails.Id.Equals(u.Id)).First();
+            return Ok(user.FriendRequests);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest();
+        }
+    }
 }
