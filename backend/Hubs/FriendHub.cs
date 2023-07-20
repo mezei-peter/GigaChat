@@ -17,6 +17,7 @@ public class FriendHub : Hub
     public async Task PingAll(string msg)
         => await Clients.All.SendAsync("ReceivePing", msg);
 
+    [Obsolete]
     public async Task AddToSelfGroup(string userToken)
     {
         IDictionary<string, object> details = JwtBuilder.Create()
@@ -25,7 +26,8 @@ public class FriendHub : Hub
                                             .MustVerifySignature()
                                             .Decode<IDictionary<string, object>>(userToken);
         string userName = details["UserName"]?.ToString() ?? "";
-        if (userName == "") {
+        if (userName == "")
+        {
             return;
         }
         await Groups.AddToGroupAsync(Context.ConnectionId, userName);

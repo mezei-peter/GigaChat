@@ -36,7 +36,7 @@ public class UserController : Controller
                                             .WithSecret("TEST_SECRET")
                                             .MustVerifySignature()
                                             .Decode<IDictionary<string, object>>(token);
-            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"].ToString()), details["UserName"].ToString());
+            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""), details["UserName"]?.ToString() ?? "");
             return Ok(publicUserDetails);
         }
         catch (Exception e)
