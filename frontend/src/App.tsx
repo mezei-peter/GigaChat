@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "./Components/Navbar";
 import EmptyPage from "./Components/EmptyPage";
+import UserMainPage from "./Components/UserMainPage";
 
 async function fetchUser(): Promise<User | null> {
   let jwt = localStorage.getItem("userToken");
@@ -24,6 +25,13 @@ function App() {
   useEffect(() => {
     fetchUser().then(usr => setUser(usr));
   }, []);
+  useEffect(() => {
+    if (user) {
+      setPage(<UserMainPage />);
+    } else {
+      setPage(<EmptyPage />)
+    }
+  }, [user]);
 
   return (
     <div className="h-screen">
