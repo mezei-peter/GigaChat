@@ -30,15 +30,15 @@ function FriendRequests({ friendConnection }: { friendConnection: HubConnection 
     }, []);
 
     return (
-        <div className="border h-20">
+        <div className="h-20">
             <input type="text" placeholder="Send a friend request to a user" className="border p-2"
                 onChange={e => setUserNameInput(e.target.value)} />
             <button className="btn btn-blue" onClick={sendFriendRequest}>Request friend</button>
             <ul className="flex flex-col">
                 {friendRequests.map(usr => {
                     return (
-                        <li key={usr.id}>
-                            <div>{usr.userName} wants to be your friend</div>
+                        <li key={usr.id} className="flex flex-row justify-between">
+                            <div><span className="font-bold">{usr.userName}</span> wants to be your friend</div>
                             <button className="btn btn-blue" type="button">Accept</button>
                         </li>
                     )

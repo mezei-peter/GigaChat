@@ -54,22 +54,21 @@ public class FriendHub : Hub
     {
         Guid senderId = Guid.Parse(GetDataFromIDictionary(DecodeJwt(senderToken), "Id"));
         User sender = _dbContext.Users.Where(u => u.Id.Equals(senderId)).First();
-        if (sender == null)
+        User receiver = _dbContext.Users.Where(u => u.UserName == receiverUserName).First();
+
+        if (sender.Id.Equals(receiver.Id))
         {
             return;
         }
-        User receiver = _dbContext.Users.Where(u => u.UserName == receiverUserName).First();
-
-        if (sender != null && receiver != null)
+        _dbContext.FriendShips.Add(new()
         {
-            if (sender.Id.Equals(receiver.Id))
-            {
-                return;
-            }
-            receiver.FriendRequests.Add(sender);
-            _dbContext.SaveChanges();
-            await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest",
-                                                            sender?.Id.ToString(), sender?.UserName);
-        }
+            Proposer = sender,
+            Accepter = receiver,
+            IsAccepted = false,
+            DateOfProposal = DateTime.Now
+        });
+        _dbContext.SaveChanges();
+        await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest",
+                                                        sender?.Id.ToString(), sender?.UserName);
     }
 }

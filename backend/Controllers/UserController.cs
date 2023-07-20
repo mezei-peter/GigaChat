@@ -88,7 +88,13 @@ public class UserController : Controller
             PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""),
                 details["UserName"]?.ToString() ?? "");
             User user = _dbContext.Users.Where(u => publicUserDetails.Id.Equals(u.Id)).First();
-            return Ok(user.FriendRequests);
+            ICollection<PublicUserDetails> friendRequests = _dbContext.FriendShips
+                .Where(f =>
+                    f != null && f.Accepter.Id.Equals(user.Id) && f.IsAccepted == false
+                )
+                .Select(f => new PublicUserDetails(f.Proposer.Id, f.Proposer.UserName))
+                .ToArray();
+            return Ok(friendRequests);
         }
         catch (Exception e)
         {
