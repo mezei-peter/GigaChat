@@ -1,5 +1,8 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
+import FriendRequests from "./FriendRequests";
+import OpenChat from "./OpenChat";
+import FriendList from "./FriendList";
 
 function UserMainPage() {
     const [connection, setConnection] = useState<HubConnection | null>(null);
@@ -30,7 +33,13 @@ function UserMainPage() {
     }, [connection]);
 
     return (
-        <div>User Main Page</div>
+        <div className="flex flex-col h-full">
+            <div className="flex flex-row h-full">
+                <OpenChat />
+                <FriendList />
+            </div>
+            <FriendRequests />
+        </div>
     );
 }
 
