@@ -29,9 +29,13 @@ namespace backend.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

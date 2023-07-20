@@ -2,9 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace GigaChat.Models;
 
+[Index(nameof(UserName), IsUnique = true)]
 public class User
 {
     [Key]
@@ -12,6 +15,7 @@ public class User
     public Guid Id { get; set; }
 
     [Required]
+    [MaxLength(30)]
     public string UserName { get; set; } = string.Empty;
 
     [Required]

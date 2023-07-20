@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backend.Migrations
 {
     [DbContext(typeof(GigaChatDbContext))]
-    [Migration("20230718101044_InitialCreate")]
+    [Migration("20230720113330_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,9 +32,13 @@ namespace backend.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
