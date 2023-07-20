@@ -92,6 +92,7 @@ public class UserController : Controller
                 .Where(f =>
                     f != null && f.Accepter.Id.Equals(user.Id) && f.IsAccepted == false
                 )
+                .OrderByDescending(f => f.DateOfProposal)
                 .Select(f => new PublicUserDetails(f.Proposer.Id, f.Proposer.UserName))
                 .ToArray();
             return Ok(friendRequests);
