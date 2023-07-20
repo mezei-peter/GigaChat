@@ -1,9 +1,12 @@
 import { HubConnection } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
 
-function FriendRequests({ friendConnection }: { friendConnection: HubConnection | null }) {
+function FriendRequests({ friendConnection, friendRequests, setFriendRequests }: {
+    friendConnection: HubConnection | null,
+    friendRequests: Array<User>,
+    setFriendRequests: React.Dispatch<React.SetStateAction<User[]>>
+}) {
     const [userNameInput, setUserNameInput] = useState("");
-    const [friendRequests, setFriendRequests] = useState<Array<User>>([]);
 
 
     const sendFriendRequest = () => {
@@ -25,7 +28,6 @@ function FriendRequests({ friendConnection }: { friendConnection: HubConnection 
     };
 
     useEffect(() => {
-        console.log("Friends requests mounted");
         fetchFriendRequests();
     }, []);
 

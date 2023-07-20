@@ -7,6 +7,7 @@ import FriendList from "./FriendList";
 function UserMainPage() {
     const [chatConnection, setChatConnection] = useState<HubConnection | null>(null);
     const [friendConnection, setFriendConnection] = useState<HubConnection | null>(null);
+    const [friendRequests, setFriendRequests] = useState<Array<User>>([]);
 
     useEffect(() => {
         const hubConnection = new HubConnectionBuilder()
@@ -48,7 +49,7 @@ function UserMainPage() {
             return;
         }
         friendConnection?.on("ReceiveFriendRequest", (id, userName) => {
-            console.log(`Friend Request received from ${userName}(${id})`);
+            setFriendRequests([{ id: id, userName: userName }, ...friendRequests]);
         });
         if (friendConnection?.state === HubConnectionState.Disconnected) {
             friendConnection.start()
@@ -62,7 +63,7 @@ function UserMainPage() {
                 <OpenChat />
                 <FriendList />
             </div>
-            <FriendRequests friendConnection={friendConnection} />
+            <FriendRequests friendConnection={friendConnection} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
         </div>
     );
 }
