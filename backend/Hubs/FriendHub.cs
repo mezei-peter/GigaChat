@@ -60,15 +60,20 @@ public class FriendHub : Hub
         {
             return;
         }
-        _dbContext.FriendShips.Add(new()
+        if (_dbContext.FriendShips
+            .Where(f => f.Proposer.Id.Equals(senderId) && f.Accepter.Id.Equals(receiver.Id))
+            .ToArray().Length == 0)
         {
-            Proposer = sender,
-            Accepter = receiver,
-            IsAccepted = false,
-            DateOfProposal = DateTime.Now
-        });
-        _dbContext.SaveChanges();
-        await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest",
-                                                        sender?.Id.ToString(), sender?.UserName);
+            _dbContext.FriendShips.Add(new()
+            {
+                Proposer = sender,
+                Accepter = receiver,
+                IsAccepted = false,
+                DateOfProposal = DateTime.Now
+            });
+            _dbContext.SaveChanges();
+            await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest",
+                                                            sender?.Id.ToString(), sender?.UserName);
+        }
     }
 }
