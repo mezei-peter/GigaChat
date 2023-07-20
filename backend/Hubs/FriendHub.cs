@@ -31,21 +31,21 @@ public class FriendHub : Hub
         }
     }
 
-    private static string GetUserNameFromIDictionary(IDictionary<string, object> dict)
+    private static string GetDataFromIDictionary(IDictionary<string, object> dict, string key)
     {
-        string userName = dict["UserName"]?.ToString() ?? "";
-        if (userName == "")
+        string data = dict[key]?.ToString() ?? "";
+        if (data == "")
         {
-            throw new Exception("No valid username found in Dictionary.");
+            throw new Exception($"No valid {data} found in Dictionary.");
         }
-        return userName;
+        return data;
     }
 
     [Obsolete]
     public async Task AddToSelfGroup(string userToken)
     {
         IDictionary<string, object> details = DecodeJwt(userToken);
-        string userName = GetUserNameFromIDictionary(details);
+        string userName = GetDataFromIDictionary(details, "UserName");
         await Groups.AddToGroupAsync(Context.ConnectionId, userName);
     }
 }
