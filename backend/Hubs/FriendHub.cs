@@ -59,12 +59,17 @@ public class FriendHub : Hub
             return;
         }
         User receiver = _dbContext.Users.Where(u => u.UserName == receiverUserName).First();
-        if (receiver == null)
-        {
-            return;
-        }
 
-        receiver.FriendRequests.Add(sender);
-        await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest", sender.Id.ToString(), sender.UserName);
+        if (sender != null && receiver != null)
+        {
+            if (sender.Id.Equals(receiver.Id))
+            {
+                return;
+            }
+            receiver.FriendRequests.Add(sender);
+            _dbContext.SaveChanges();
+            await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest",
+                                                            sender?.Id.ToString(), sender?.UserName);
+        }
     }
 }
