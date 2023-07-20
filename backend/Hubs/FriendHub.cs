@@ -48,4 +48,23 @@ public class FriendHub : Hub
         string userName = GetDataFromIDictionary(details, "UserName");
         await Groups.AddToGroupAsync(Context.ConnectionId, userName);
     }
+
+    [Obsolete]
+    public async Task SendFriendRequest(string senderToken, string receiverUserName)
+    {
+        Guid senderId = Guid.Parse(GetDataFromIDictionary(DecodeJwt(senderToken), "Id"));
+        User sender = _dbContext.Users.Where(u => u.Id.Equals(senderId)).First();
+        if (sender == null)
+        {
+            return;
+        }
+        User receiver = _dbContext.Users.Where(u => u.UserName == receiverUserName).First();
+        if (receiver == null)
+        {
+            return;
+        }
+
+        receiver.FriendRequests.Add(sender);
+        await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest", sender.Id.ToString(), sender.UserName);
+    }
 }

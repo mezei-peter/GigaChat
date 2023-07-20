@@ -47,6 +47,9 @@ function UserMainPage() {
         if (!friendConnection) {
             return;
         }
+        friendConnection?.on("ReceiveFriendRequest", (id, userName) => {
+            console.log(`Friend Request received from ${userName}(${id})`);
+        });
         if (friendConnection?.state === HubConnectionState.Disconnected) {
             friendConnection.start()
                 .then(() => friendConnection.invoke("AddToSelfGroup", localStorage.getItem("userToken")));
@@ -59,7 +62,7 @@ function UserMainPage() {
                 <OpenChat />
                 <FriendList />
             </div>
-            <FriendRequests />
+            <FriendRequests friendConnection={friendConnection} />
         </div>
     );
 }
