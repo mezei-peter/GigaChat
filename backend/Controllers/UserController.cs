@@ -41,7 +41,7 @@ public class UserController : Controller
     {
         User user = _dbContext.Users
             .Where(user => userCredentials.UserName == user.UserName && userCredentials.Password == user.Password)
-            .First(); 
+            .First();
         string token = _jwtService.EncodeUserToJwt(user, "TEST_SECRET");
         return Ok(token);
     }
@@ -58,19 +58,16 @@ public class UserController : Controller
     }
 
     [HttpGet, Route("/User/GetFriendRequests/{token}")]
-    [Obsolete]
     public IActionResult GetFriendRequests(string token)
     {
         try
         {
-            IDictionary<string, object> details = JwtBuilder.Create()
-                                            .WithAlgorithm(new HMACSHA256Algorithm())
-                                            .WithSecret("TEST_SECRET")
-                                            .MustVerifySignature()
-                                            .Decode<IDictionary<string, object>>(token);
-            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""),
-                details["UserName"]?.ToString() ?? "");
-            User user = _dbContext.Users.Where(u => publicUserDetails.Id.Equals(u.Id)).First();
+            User? dummyUser = _jwtService.DecodeUserFromJwt(token, "TEST_SECRET");
+            if (dummyUser == null)
+            {
+                return Unauthorized();
+            }
+            User user = _dbContext.Users.Where(u => dummyUser.Id.Equals(u.Id)).First();
             ICollection<PublicUserDetails> friendRequests = _dbContext.FriendShips
                 .Where(f =>
                     f != null && f.Accepter.Id.Equals(user.Id) && f.IsAccepted == false

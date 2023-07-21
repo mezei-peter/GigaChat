@@ -9,10 +9,10 @@ public class FriendShip
     public Guid Id { get; set; }
 
     [Required]
-    public User? Proposer { get; set; }
+    public User Proposer { get; set; } = null!;
 
     [Required]
-    public User? Accepter { get; set; }
+    public User Accepter { get; set; } = null!;
 
     [Required]
     public bool IsAccepted { get; set; } = false;
