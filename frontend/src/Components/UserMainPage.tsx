@@ -8,6 +8,7 @@ function UserMainPage() {
     const [chatConnection, setChatConnection] = useState<HubConnection | null>(null);
     const [friendConnection, setFriendConnection] = useState<HubConnection | null>(null);
     const [friendRequests, setFriendRequests] = useState<Array<User>>([]);
+    const [friends, setFriends] = useState<Array<User>>([]);
 
     useEffect(() => {
         const hubConnection = new HubConnectionBuilder()
@@ -51,17 +52,21 @@ function UserMainPage() {
         friendConnection?.on("ReceiveFriendRequest", (id, userName) => {
             setFriendRequests([{ id: id, userName: userName }, ...friendRequests]);
         });
+        friendConnection?.on("AddFriend", (id, userName) => {
+            setFriends([...friends, {id: id, userName: userName}]); 
+            setFriendRequests([...friendRequests.filter(fr => fr.id !== id)]);
+        });
         if (friendConnection?.state === HubConnectionState.Disconnected) {
             friendConnection.start()
                 .then(() => friendConnection.invoke("AddToSelfGroup", localStorage.getItem("userToken")));
         }
-    });
+    }, [friendConnection]);
 
     return (
         <div className="flex flex-col h-full">
             <div className="flex flex-row h-full">
                 <OpenChat />
-                <FriendList />
+                <FriendList friends={friends} />
             </div>
             <FriendRequests friendConnection={friendConnection} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
         </div>

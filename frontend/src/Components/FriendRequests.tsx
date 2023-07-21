@@ -27,6 +27,14 @@ function FriendRequests({ friendConnection, friendRequests, setFriendRequests }:
             .then(data => setFriendRequests(data));
     };
 
+    const acceptFriendRequest = (requesterId: string) => {
+        const token = localStorage.getItem("userToken") ?? "";
+        if (token === "") {
+            return;
+        }
+        friendConnection?.invoke("AcceptFriendRequest", token, requesterId);
+    };
+
     useEffect(() => {
         fetchFriendRequests();
     }, []);
@@ -40,7 +48,7 @@ function FriendRequests({ friendConnection, friendRequests, setFriendRequests }:
                 {friendRequests.map(usr => {
                     return (
                         <li key={usr.id} className="m-auto">
-                            <button className="btn btn-blue !font-normal m-1">
+                            <button onClick={() => acceptFriendRequest(usr.id)} className="btn btn-blue !font-normal m-1">
                                 Accept <span className="font-bold">{usr.userName}</span>'s friend request
                             </button>
                         </li>

@@ -76,4 +76,26 @@ public class FriendHub : Hub
                                                             sender?.Id.ToString(), sender?.UserName);
         }
     }
+
+    [Obsolete]
+    public async Task AcceptFriendRequest(string accepterToken, string friendId)
+    {
+        Guid accepterId = Guid.Parse(GetDataFromIDictionary(DecodeJwt(accepterToken), "Id"));
+        User accepter = _dbContext.Users.Where(u => u.Id.Equals(accepterId)).First();
+        User friend = _dbContext.Users.Where(u => u.Id.Equals(Guid.Parse(friendId))).First();
+        if (accepter.Id.Equals(friend.Id))
+        {
+            return;
+        }
+        FriendShip existingFriendship = _dbContext.FriendShips
+            .Where(f => f.Accepter.Id.Equals(accepter.Id) && f.Proposer.Id.Equals(friend.Id)).FirstOrDefault();
+        if (existingFriendship != null && !existingFriendship.IsAccepted)
+        {
+            existingFriendship.IsAccepted = true;
+            existingFriendship.DateOfAcceptance = DateTime.Now;
+            _dbContext.SaveChanges();
+            await Clients.Group(accepter.UserName).SendAsync("AddFriend", friend.Id.ToString(), friend.UserName);
+            await Clients.Group(friend.UserName).SendAsync("AddFriend", accepter.Id.ToString(), accepter.UserName);
+        }
+    }
 }
