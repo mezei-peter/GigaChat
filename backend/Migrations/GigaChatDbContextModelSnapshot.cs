@@ -29,6 +29,9 @@ namespace backend.Migrations
                     b.Property<Guid>("ChatRoomId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -46,6 +49,9 @@ namespace backend.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")

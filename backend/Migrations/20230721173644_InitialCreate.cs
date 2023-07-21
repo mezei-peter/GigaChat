@@ -16,6 +16,7 @@ namespace backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
                     Type = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -43,7 +44,8 @@ namespace backend.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     ChatRoomId = table.Column<Guid>(type: "TEXT", nullable: false),
                     AuthorId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Message = table.Column<string>(type: "TEXT", nullable: false)
+                    Message = table.Column<string>(type: "TEXT", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

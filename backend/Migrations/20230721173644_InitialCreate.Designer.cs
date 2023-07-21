@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backend.Migrations
 {
     [DbContext(typeof(GigaChatDbContext))]
-    [Migration("20230721170437_InitialCreate")]
+    [Migration("20230721173644_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,6 +32,9 @@ namespace backend.Migrations
                     b.Property<Guid>("ChatRoomId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -49,6 +52,9 @@ namespace backend.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")

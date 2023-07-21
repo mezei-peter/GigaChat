@@ -83,6 +83,9 @@ public class FriendHub : Hub
         {
             reverseFriendship.IsAccepted = true;
             reverseFriendship.DateOfAcceptance = DateTime.Now;
+            ChatRoom chatRoom = _dbContext.ChatRooms.Add(new() { Type = ChatRoomType.DIRECT }).Entity;
+            _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = receiver });
+            _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = sender });
             _dbContext.SaveChanges();
             await Clients.Group(receiver.UserName).SendAsync("AddFriend", sender.Id.ToString(), sender.UserName);
             await Clients.Group(sender.UserName).SendAsync("AddFriend", receiver.Id.ToString(), receiver.UserName);
@@ -106,8 +109,8 @@ public class FriendHub : Hub
             existingFriendship.IsAccepted = true;
             existingFriendship.DateOfAcceptance = DateTime.Now;
             ChatRoom chatRoom = _dbContext.ChatRooms.Add(new() { Type = ChatRoomType.DIRECT }).Entity;
-            _dbContext.Memberships.Add(new() {ChatRoom = chatRoom, User = accepter});
-            _dbContext.Memberships.Add(new() {ChatRoom = chatRoom, User = friend});
+            _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = accepter });
+            _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = friend });
             _dbContext.SaveChanges();
             await Clients.Group(accepter.UserName).SendAsync("AddFriend", friend.Id.ToString(), friend.UserName);
             await Clients.Group(friend.UserName).SendAsync("AddFriend", accepter.Id.ToString(), accepter.UserName);

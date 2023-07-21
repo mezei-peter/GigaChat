@@ -16,4 +16,7 @@ public class ChatMessage
 
     [Required]
     public string Message { get; set; } = null!;
+
+    [Required]
+    public DateTime DateTime { get; set; } 
 }
