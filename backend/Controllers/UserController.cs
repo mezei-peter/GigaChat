@@ -103,4 +103,34 @@ public class UserController : Controller
             return BadRequest();
         }
     }
+
+    [HttpGet, Route("/User/GetFriends/{token}")]
+    [Obsolete]
+    public IActionResult GetFriends(string token)
+    {
+        try
+        {
+            IDictionary<string, object> details = JwtBuilder.Create()
+                                            .WithAlgorithm(new HMACSHA256Algorithm())
+                                            .WithSecret("TEST_SECRET")
+                                            .MustVerifySignature()
+                                            .Decode<IDictionary<string, object>>(token);
+            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""),
+                details["UserName"]?.ToString() ?? "");
+            User user = _dbContext.Users.Where(u => publicUserDetails.Id.Equals(u.Id)).First();
+            ICollection<PublicUserDetails> friends = _dbContext.FriendShips
+                .Where(f =>
+                    f != null && f.Accepter.Id.Equals(user.Id) && f.IsAccepted == true
+                )
+                .OrderByDescending(f => f.DateOfAcceptance)
+                .Select(f => new PublicUserDetails(f.Proposer.Id, f.Proposer.UserName))
+                .ToArray();
+            return Ok(friends);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest();
+        }
+    }
 }

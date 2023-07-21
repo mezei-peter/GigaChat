@@ -66,7 +66,7 @@ function UserMainPage() {
         <div className="flex flex-col h-full">
             <div className="flex flex-row h-full">
                 <OpenChat />
-                <FriendList friends={friends} />
+                <FriendList friends={friends} setFriends={setFriends} />
             </div>
             <FriendRequests friendConnection={friendConnection} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
         </div>
