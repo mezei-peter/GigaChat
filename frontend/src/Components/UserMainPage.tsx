@@ -53,7 +53,7 @@ function UserMainPage() {
             setFriendRequests([{ id: id, userName: userName }, ...friendRequests]);
         });
         friendConnection?.on("AddFriend", (id, userName) => {
-            setFriends([...friends, {id: id, userName: userName}]); 
+            setFriends([{id: id, userName: userName}, ...friends]); 
             setFriendRequests([...friendRequests.filter(fr => fr.id !== id)]);
         });
         if (friendConnection?.state === HubConnectionState.Disconnected) {
