@@ -3,16 +3,20 @@ using GigaChat.Models;
 using GigaChat.Controllers.Dtos;
 using JWT.Builder;
 using JWT.Algorithms;
+using GigaChat.Services;
 
 namespace GigaChat.Controllers;
 
 public class UserController : Controller
 {
     private readonly GigaChatDbContext _dbContext;
+    private readonly IJwtService _jwtService;
 
-    public UserController(GigaChatDbContext dbContext)
+
+    public UserController(GigaChatDbContext dbContext, IJwtService jwtService)
     {
         _dbContext = dbContext;
+        _jwtService = jwtService;
     }
 
     [HttpGet]
@@ -25,21 +29,12 @@ public class UserController : Controller
     [Obsolete]
     public IActionResult GetByJwt(string token)
     {
-        try
+        User? user = _jwtService.DecodeUserFromJwt(token, "TEST_SECRET");
+        if (user == null)
         {
-            IDictionary<string, object> details = JwtBuilder.Create()
-                                            .WithAlgorithm(new HMACSHA256Algorithm())
-                                            .WithSecret("TEST_SECRET")
-                                            .MustVerifySignature()
-                                            .Decode<IDictionary<string, object>>(token);
-            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""), details["UserName"]?.ToString() ?? "");
-            return Ok(publicUserDetails);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
             return BadRequest();
         }
+        return Ok(PublicUserDetails.FromUser(user));
     }
 
     [HttpPost]
