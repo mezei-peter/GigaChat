@@ -26,7 +26,6 @@ public class UserController : Controller
     }
 
     [HttpGet, Route("/User/GetByJwt/{token}")]
-    [Obsolete]
     public IActionResult GetByJwt(string token)
     {
         User? user = _jwtService.DecodeUserFromJwt(token, "TEST_SECRET");
@@ -38,19 +37,12 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    [Obsolete]
     public IActionResult Login([FromBody] UsernameAndPassword userCredentials)
     {
         User user = _dbContext.Users
-                    .Where(user => userCredentials.UserName == user.UserName && userCredentials.Password == user.Password)
-                    .First();
-        string token = JwtBuilder.Create()
-                      .WithAlgorithm(new HMACSHA256Algorithm())
-                      .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds())
-                      .AddClaim("Id", user.Id.ToString())
-                      .AddClaim("UserName", user.UserName)
-                      .WithSecret("TEST_SECRET")
-                      .Encode();
+            .Where(user => userCredentials.UserName == user.UserName && userCredentials.Password == user.Password)
+            .First(); 
+        string token = _jwtService.EncodeUserToJwt(user, "TEST_SECRET");
         return Ok(token);
     }
 
