@@ -26,6 +26,7 @@ public class UserController : Controller
     }
 
     [HttpGet, Route("/User/GetByJwt/{token}")]
+    [Obsolete]
     public IActionResult GetByJwt(string token)
     {
         try
@@ -35,7 +36,7 @@ public class UserController : Controller
                                             .WithSecret("TEST_SECRET")
                                             .MustVerifySignature()
                                             .Decode<IDictionary<string, object>>(token);
-            PublicUserDetails publicUserDetails = new (Guid.Parse(details["Id"].ToString()), details["UserName"].ToString());
+            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""), details["UserName"]?.ToString() ?? "");
             return Ok(publicUserDetails);
         }
         catch (Exception e)
@@ -46,6 +47,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
+    [Obsolete]
     public IActionResult Login([FromBody] UsernameAndPassword userCredentials)
     {
         User user = _dbContext.Users
@@ -66,9 +68,69 @@ public class UserController : Controller
     {
         string userName = newUser.UserName;
         string password = newUser.Password;
-        User user = new() { Id = Guid.NewGuid(), UserName = userName, Password = password };
+        User user = new() { UserName = userName, Password = password };
         _dbContext.Add(user);
         _dbContext.SaveChanges();
         return Ok(user);
+    }
+
+    [HttpGet, Route("/User/GetFriendRequests/{token}")]
+    [Obsolete]
+    public IActionResult GetFriendRequests(string token)
+    {
+        try
+        {
+            IDictionary<string, object> details = JwtBuilder.Create()
+                                            .WithAlgorithm(new HMACSHA256Algorithm())
+                                            .WithSecret("TEST_SECRET")
+                                            .MustVerifySignature()
+                                            .Decode<IDictionary<string, object>>(token);
+            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""),
+                details["UserName"]?.ToString() ?? "");
+            User user = _dbContext.Users.Where(u => publicUserDetails.Id.Equals(u.Id)).First();
+            ICollection<PublicUserDetails> friendRequests = _dbContext.FriendShips
+                .Where(f =>
+                    f != null && f.Accepter.Id.Equals(user.Id) && f.IsAccepted == false
+                )
+                .OrderByDescending(f => f.DateOfProposal)
+                .Select(f => new PublicUserDetails(f.Proposer.Id, f.Proposer.UserName))
+                .ToArray();
+            return Ok(friendRequests);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet, Route("/User/GetFriends/{token}")]
+    [Obsolete]
+    public IActionResult GetFriends(string token)
+    {
+        try
+        {
+            IDictionary<string, object> details = JwtBuilder.Create()
+                                            .WithAlgorithm(new HMACSHA256Algorithm())
+                                            .WithSecret("TEST_SECRET")
+                                            .MustVerifySignature()
+                                            .Decode<IDictionary<string, object>>(token);
+            PublicUserDetails publicUserDetails = new(Guid.Parse(details["Id"]?.ToString() ?? ""),
+                details["UserName"]?.ToString() ?? "");
+            User user = _dbContext.Users.Where(u => publicUserDetails.Id.Equals(u.Id)).First();
+            ICollection<PublicUserDetails> friends = _dbContext.FriendShips
+                .Where(f =>
+                    f != null && f.Accepter.Id.Equals(user.Id) && f.IsAccepted == true
+                )
+                .OrderByDescending(f => f.DateOfAcceptance)
+                .Select(f => new PublicUserDetails(f.Proposer.Id, f.Proposer.UserName))
+                .ToArray();
+            return Ok(friends);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest();
+        }
     }
 }

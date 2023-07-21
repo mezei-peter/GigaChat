@@ -43,5 +43,6 @@ app.MapControllerRoute(
 
 app.UseCors();
 app.MapHub<ChatHub>("/Chat");
+app.MapHub<FriendHub>("/Friend");
 
 app.Run();
