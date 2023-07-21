@@ -60,9 +60,13 @@ public class FriendHub : Hub
         {
             return;
         }
-        if (_dbContext.FriendShips
+        FriendShip friendShip = _dbContext.FriendShips
             .Where(f => f.Proposer.Id.Equals(senderId) && f.Accepter.Id.Equals(receiver.Id))
-            .ToArray().Length == 0)
+            .FirstOrDefault();
+        FriendShip reverseFriendship = _dbContext.FriendShips
+            .Where(f => f.Proposer.Id.Equals(receiver.Id) && f.Accepter.Id.Equals(sender.Id))
+            .FirstOrDefault();
+        if (friendShip == null && reverseFriendship == null)
         {
             _dbContext.FriendShips.Add(new()
             {
@@ -74,6 +78,14 @@ public class FriendHub : Hub
             _dbContext.SaveChanges();
             await Clients.Group(receiverUserName).SendAsync("ReceiveFriendRequest",
                                                             sender?.Id.ToString(), sender?.UserName);
+        }
+        else if (reverseFriendship.IsAccepted == false)
+        {
+            reverseFriendship.IsAccepted = true;
+            reverseFriendship.DateOfAcceptance = DateTime.Now;
+            _dbContext.SaveChanges();
+            await Clients.Group(receiver.UserName).SendAsync("AddFriend", sender.Id.ToString(), sender.UserName);
+            await Clients.Group(sender.UserName).SendAsync("AddFriend", receiver.Id.ToString(), receiver.UserName);
         }
     }
 
