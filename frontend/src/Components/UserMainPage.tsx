@@ -50,11 +50,11 @@ function UserMainPage() {
             return;
         }
         friendConnection?.on("ReceiveFriendRequest", (id, userName) => {
-            setFriendRequests([{ id: id, userName: userName }, ...friendRequests]);
+            setFriendRequests((frs) => [{ id: id, userName: userName }, ...frs]);
         });
         friendConnection?.on("AddFriend", (id, userName) => {
-            setFriends([{id: id, userName: userName}, ...friends]); 
-            setFriendRequests([...friendRequests.filter(fr => fr.id !== id)]);
+            setFriends((fs) => [{id: id, userName: userName}, ...fs]); 
+            setFriendRequests((frs) => [...frs.filter(fr => fr.id !== id)]);
         });
         if (friendConnection?.state === HubConnectionState.Disconnected) {
             friendConnection.start()
