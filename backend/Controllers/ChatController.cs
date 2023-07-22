@@ -52,7 +52,10 @@ public class ChatController : Controller
             {
                 return NotFound();
             }
-            ChatMessage[] messages = _dbContext.ChatMessages.Where(msg => msg.ChatRoom.Id.Equals(chatRoom.Id)).ToArray();
+            ChatMessageDto[] messages = _dbContext.ChatMessages
+              .Where(msg => msg.ChatRoom.Id.Equals(chatRoom.Id))
+              .Select(msg => ChatMessageDto.FromChatMessage(msg))
+              .ToArray();
             return Ok(new ChatRoomDto(chatRoom, messages));
         }
         catch (FormatException)
