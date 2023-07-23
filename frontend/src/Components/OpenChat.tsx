@@ -15,8 +15,10 @@ function OpenChat({ room, user, chatConnection }: {
 
     const sendMessage = (e: FormEvent) => {
         e.preventDefault();
-        chatConnection?.invoke("SendMessageToChatRoom", localStorage.getItem("userToken"), room?.room.id, messageDraft);
-        setMessageDraft("");
+        if (messageDraft) {
+            chatConnection?.invoke("SendMessageToChatRoom", localStorage.getItem("userToken"), room?.room.id, messageDraft);
+            setMessageDraft("");
+        }    
     };
 
     return (
@@ -34,7 +36,7 @@ function OpenChat({ room, user, chatConnection }: {
                     >
                         <div className="break-words">{msg.message}</div>  
                         <div className="flex flex-row justify-between"> 
-                            <div className="text-xs">{msg.dateTime}</div>
+                            <div className="text-xs">{`${msg.dateTime.slice(0, 10)} ${msg.dateTime.slice(11, 19)}`}</div>
                             <div className="text-xs">--{msg.author.userName}</div>
                         </div>
                     </div>
