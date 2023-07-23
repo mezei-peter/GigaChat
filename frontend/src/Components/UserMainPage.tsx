@@ -62,11 +62,16 @@ function UserMainPage() {
         }
     }, [friendConnection]);
 
+    const openDirectChatRoom = (friendId: string) => {
+        console.log(friendId);
+        //TODO
+    }
+    
     return (
         <div className="flex flex-col h-full">
             <div className="flex flex-row h-full">
                 <OpenChat />
-                <FriendList friends={friends} setFriends={setFriends} />
+                <FriendList friends={friends} setFriends={setFriends} openDirectChatRoom={openDirectChatRoom} />
             </div>
             <FriendRequests friendConnection={friendConnection} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
         </div>
