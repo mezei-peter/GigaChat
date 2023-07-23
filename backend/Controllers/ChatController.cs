@@ -54,7 +54,14 @@ public class ChatController : Controller
             }
             ChatMessageDto[] messages = _dbContext.ChatMessages
               .Where(msg => msg.ChatRoom.Id.Equals(chatRoom.Id))
-              .Select(msg => ChatMessageDto.FromChatMessage(msg))
+              .Select(msg => ChatMessageDto.FromChatMessage(new ChatMessage()
+              {
+                  Id = msg.Id,
+                  Author = msg.Author,
+                  DateTime = msg.DateTime,
+                  ChatRoom = msg.ChatRoom,
+                  Message = msg.Message
+              }))
               .ToArray();
             return Ok(new ChatRoomDto(chatRoom, messages));
         }

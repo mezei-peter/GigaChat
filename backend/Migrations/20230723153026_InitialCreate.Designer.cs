@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backend.Migrations
 {
     [DbContext(typeof(GigaChatDbContext))]
-    [Migration("20230721173644_InitialCreate")]
+    [Migration("20230723153026_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

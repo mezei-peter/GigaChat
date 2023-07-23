@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import ChatRoom from "../types/ChatRoom";
 import { HubConnection } from "@microsoft/signalr";
 
@@ -7,9 +7,17 @@ function OpenChat({ room, user, chatConnection }: {
     user: User,
     chatConnection: HubConnection | null
 }) {
+    const [messageDraft, setMessageDraft] = useState<string>("");
+
     useEffect(() => {
         chatConnection?.invoke("AddToChatRoomGroup", localStorage.getItem("userToken"), room?.room.id);
     }, [room]);
+
+    const sendMessage = (e: FormEvent) => {
+        e.preventDefault();
+        chatConnection?.invoke("SendMessageToChatRoom", localStorage.getItem("userToken"), room?.room.id, messageDraft);
+        setMessageDraft("");
+    };
 
     return (
         <div className="flex flex-col w-5/6 border justify-between">
@@ -31,8 +39,12 @@ function OpenChat({ room, user, chatConnection }: {
                 )))
             }
             </div>
-            <form>
-                <input type="text" placeholder="Write a message" className="border p-1 w-5/6" />
+            <form onSubmit={(e) => sendMessage(e)}>
+                <input type="text" placeholder="Write a message" 
+                    className="border p-1 w-5/6"
+                    onChange={e => setMessageDraft(e.target.value)}    
+                    value={messageDraft}
+                />
                 <button className="btn btn-blue w-1/6">Send</button> 
             </form>
         </div>
