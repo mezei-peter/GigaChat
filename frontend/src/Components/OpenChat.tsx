@@ -28,7 +28,7 @@ function OpenChat({ room, user, chatConnection }: {
                     <div 
                         key={msg.id} 
                         className={"flex flex-col border w-4/6 m-1 p-1"
-                            .concat(msg.author.id === user.id ? " bg-sky-100 self.end" : " bg-gray-100 self-start")}
+                            .concat(msg.author.id === user.id ? " bg-sky-100 self-end" : " bg-gray-100 self-start")}
                     >
                         <div className="break-words">{msg.message}</div>  
                         <div className="flex flex-row justify-between"> 
