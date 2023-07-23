@@ -5,7 +5,7 @@ import OpenChat from "./OpenChat";
 import FriendList from "./FriendList";
 import ChatRoom from "../types/ChatRoom";
 
-function UserMainPage() {
+function UserMainPage({user}: {user: User}) {
     const [chatConnection, setChatConnection] = useState<HubConnection | null>(null);
     const [friendConnection, setFriendConnection] = useState<HubConnection | null>(null);
     const [friendRequests, setFriendRequests] = useState<Array<User>>([]);
@@ -73,7 +73,7 @@ function UserMainPage() {
     return (
         <div className="flex flex-col h-full">
             <div className="flex flex-row h-5/6">
-                <OpenChat room={openRoom} setRoom={setOpenRoom}/>
+                <OpenChat room={openRoom} user={user}/>
                 <FriendList friends={friends} setFriends={setFriends} openDirectChatRoom={openDirectChatRoom} />
             </div>
             <FriendRequests friendConnection={friendConnection} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
