@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import FriendRequests from "./FriendRequests";
 import OpenChat from "./OpenChat";
 import FriendList from "./FriendList";
+import ChatRoom from "../types/ChatRoom";
 
 function UserMainPage() {
     const [chatConnection, setChatConnection] = useState<HubConnection | null>(null);
     const [friendConnection, setFriendConnection] = useState<HubConnection | null>(null);
     const [friendRequests, setFriendRequests] = useState<Array<User>>([]);
     const [friends, setFriends] = useState<Array<User>>([]);
+    const [openRoom, setOpenRoom] = useState<ChatRoom | null>(null);
 
     useEffect(() => {
         const hubConnection = new HubConnectionBuilder()
@@ -63,14 +65,15 @@ function UserMainPage() {
     }, [friendConnection]);
 
     const openDirectChatRoom = (friendId: string) => {
-        console.log(friendId);
-        //TODO
+        fetch(`/api/Chat/GetDirectChatRoom/${localStorage.getItem("userToken")}/${friendId}`)
+            .then(res => res.json())
+            .then(data => setOpenRoom(data));
     }
     
     return (
         <div className="flex flex-col h-full">
             <div className="flex flex-row h-full">
-                <OpenChat />
+                <OpenChat room={openRoom} setRoom={setOpenRoom}/>
                 <FriendList friends={friends} setFriends={setFriends} openDirectChatRoom={openDirectChatRoom} />
             </div>
             <FriendRequests friendConnection={friendConnection} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
