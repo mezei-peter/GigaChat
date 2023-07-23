@@ -1,9 +1,14 @@
 import { useEffect } from "react";
 import ChatRoom from "../types/ChatRoom";
+import { HubConnection } from "@microsoft/signalr";
 
-function OpenChat({ room, user }: {room: ChatRoom | null, user: User}) {
+function OpenChat({ room, user, chatConnection }: {
+    room: ChatRoom | null,
+    user: User,
+    chatConnection: HubConnection | null
+}) {
     useEffect(() => {
-        console.log(room);
+        chatConnection?.invoke("AddToChatRoomGroup", localStorage.getItem("userToken"), room?.room.id);
     }, [room]);
 
     return (

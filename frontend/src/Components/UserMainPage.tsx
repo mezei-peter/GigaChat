@@ -4,6 +4,7 @@ import FriendRequests from "./FriendRequests";
 import OpenChat from "./OpenChat";
 import FriendList from "./FriendList";
 import ChatRoom from "../types/ChatRoom";
+import ChatMessage from "../types/ChatMessage";
 
 function UserMainPage({user}: {user: User}) {
     const [chatConnection, setChatConnection] = useState<HubConnection | null>(null);
@@ -40,6 +41,11 @@ function UserMainPage({user}: {user: User}) {
         chatConnection?.on("ReceivePing", (msg) => {
             console.log("Ping message received from SignalR: " + msg);
         });
+        chatConnection?.on("ReceiveMessageToChatRoom", (msg: ChatMessage) => {
+            setOpenRoom((curr: ChatRoom | null) => {
+                return curr ? {...(curr as ChatRoom), messages: [...curr.messages, msg]} : null;
+            });
+        });
         if (chatConnection.state === HubConnectionState.Disconnected) {
             chatConnection?.start()
                 .then(() => chatConnection?.invoke("PingAll", "Hello, SignalR!"))
@@ -73,7 +79,7 @@ function UserMainPage({user}: {user: User}) {
     return (
         <div className="flex flex-col h-full">
             <div className="flex flex-row h-5/6">
-                <OpenChat room={openRoom} user={user}/>
+                <OpenChat room={openRoom} user={user} chatConnection={chatConnection}/>
                 <FriendList friends={friends} setFriends={setFriends} openDirectChatRoom={openDirectChatRoom} />
             </div>
             <FriendRequests friendConnection={friendConnection} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
