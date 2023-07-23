@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using GigaChat.Models;
 using GigaChat.Controllers.Dtos;
-using JWT.Builder;
-using JWT.Algorithms;
 using GigaChat.Services;
 
 namespace GigaChat.Controllers;
@@ -94,13 +92,18 @@ public class UserController : Controller
             {
                 return Unauthorized();
             }
-            User user = _dbContext.Users.Where(u => dummyUser.Id.Equals(u.Id)).First();
+            User user = _dbContext.Users
+              .Where(u => dummyUser.Id.Equals(u.Id))
+              .First();
             ICollection<PublicUserDetails> friends = _dbContext.FriendShips
                 .Where(f =>
-                    f != null && f.Accepter.Id.Equals(user.Id) && f.IsAccepted == true
+                    (f.Accepter.Id.Equals(user.Id) || f.Proposer.Id.Equals(user.Id)) && f.IsAccepted == true
                 )
                 .OrderByDescending(f => f.DateOfAcceptance)
-                .Select(f => new PublicUserDetails(f.Proposer.Id, f.Proposer.UserName))
+                .Select(f => 
+                    f.Proposer.Id.Equals(user.Id)
+                    ? new PublicUserDetails(f.Accepter.Id, f.Accepter.UserName)
+                    : new PublicUserDetails(f.Proposer.Id, f.Proposer.UserName))
                 .ToArray();
             return Ok(friends);
         }
