@@ -1,6 +1,4 @@
 using GigaChat.Models;
-using JWT.Algorithms;
-using JWT.Builder;
 using Microsoft.AspNetCore.SignalR;
 using GigaChat.Services;
 
@@ -64,7 +62,11 @@ public class FriendHub : Hub
         {
             reverseFriendship.IsAccepted = true;
             reverseFriendship.DateOfAcceptance = DateTime.Now;
-            ChatRoom chatRoom = _dbContext.ChatRooms.Add(new() { Type = ChatRoomType.DIRECT }).Entity;
+            ChatRoom chatRoom = _dbContext.ChatRooms.Add(new()
+            {
+                Type = ChatRoomType.DIRECT,
+                Name = reverseFriendship.Proposer.UserName + "-" + reverseFriendship.Accepter.UserName
+            }).Entity;
             _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = receiver });
             _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = sender });
             _dbContext.SaveChanges();
@@ -93,7 +95,11 @@ public class FriendHub : Hub
         {
             existingFriendship.IsAccepted = true;
             existingFriendship.DateOfAcceptance = DateTime.Now;
-            ChatRoom chatRoom = _dbContext.ChatRooms.Add(new() { Type = ChatRoomType.DIRECT }).Entity;
+            ChatRoom chatRoom = _dbContext.ChatRooms.Add(new()
+            {
+                Type = ChatRoomType.DIRECT,
+                Name = existingFriendship.Proposer.UserName + "-" + existingFriendship.Accepter.UserName
+            }).Entity;
             _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = accepter });
             _dbContext.Memberships.Add(new() { ChatRoom = chatRoom, User = friend });
             _dbContext.SaveChanges();

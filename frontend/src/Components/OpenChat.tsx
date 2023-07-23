@@ -21,7 +21,9 @@ function OpenChat({ room, user, chatConnection }: {
 
     return (
         <div className="flex flex-col w-5/6 border justify-between">
-            <div className="text-center text-lg bg-gray-100">Chat</div>
+            <div className="text-center text-lg bg-gray-100">
+                {room?.room.type === 0 ? room?.room.name?.replace(`${user.userName}-`, "").replace(`-${user.userName}`, "") : room?.room.name}
+            </div>
             <div className="flex flex-col overflow-y-scroll h-full">
             {room !== null && 
                 (room?.messages.map(msg => (
