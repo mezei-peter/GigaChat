@@ -21,7 +21,7 @@ function FriendList({ friends, setFriends, openDirectChatRoom }: {
 
     return (
         <div className="w-1/6 border">
-            <ul className="flex flex-col">
+            <ul className="flex flex-col overflow-y-scroll">
                 {friends.map(friend => 
                     <div key={friend.id}
                     onClick={() => openDirectChatRoom(friend.id)}

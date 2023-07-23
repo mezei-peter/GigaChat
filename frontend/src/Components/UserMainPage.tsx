@@ -72,7 +72,7 @@ function UserMainPage() {
     
     return (
         <div className="flex flex-col h-full">
-            <div className="flex flex-row h-full">
+            <div className="flex flex-row h-5/6">
                 <OpenChat room={openRoom} setRoom={setOpenRoom}/>
                 <FriendList friends={friends} setFriends={setFriends} openDirectChatRoom={openDirectChatRoom} />
             </div>
