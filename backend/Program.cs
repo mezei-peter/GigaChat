@@ -1,10 +1,12 @@
 using GigaChat.Models;
 using Microsoft.EntityFrameworkCore;
 using GigaChat.Hubs;
+using GigaChat.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<GigaChatDbContext>(options => options.UseSqlite("Data Source=app.db"));
 builder.Services.AddSignalR();

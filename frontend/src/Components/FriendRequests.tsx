@@ -40,7 +40,7 @@ function FriendRequests({ friendConnection, friendRequests, setFriendRequests }:
     }, []);
 
     return (
-        <div className="h-20">
+        <div className="h-20 m-auto">
             <input type="text" placeholder="Send a friend request to a user" className="border p-2"
                 onChange={e => setUserNameInput(e.target.value)} />
             <button className="btn btn-blue" onClick={sendFriendRequest}>Request friend</button>

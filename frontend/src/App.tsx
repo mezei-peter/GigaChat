@@ -27,7 +27,7 @@ function App() {
   }, []);
   useEffect(() => {
     if (user) {
-      setPage(<UserMainPage />);
+      setPage(<UserMainPage user={user}/>);
     } else {
       setPage(<EmptyPage />)
     }

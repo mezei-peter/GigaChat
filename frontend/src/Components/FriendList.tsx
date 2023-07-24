@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 
-function FriendList({ friends, setFriends }: { friends: Array<User>, setFriends: React.Dispatch<React.SetStateAction<User[]>> }) {
-    
+function FriendList({ friends, setFriends, openDirectChatRoom }: {
+    friends: Array<User>,
+    setFriends: React.Dispatch<React.SetStateAction<User[]>>,
+    openDirectChatRoom: (friendId: string) => void
+}){
     const fetchFriends = () => {
         const token: string = localStorage.getItem("userToken") ?? "";
         if (token === "") {
@@ -15,11 +18,14 @@ function FriendList({ friends, setFriends }: { friends: Array<User>, setFriends:
     useEffect(() => {
         fetchFriends();   
     }, []);
-    
+
     return (
         <div className="w-1/6 border">
-            <ul className="flex flex-col">
-                {friends.map(friend => <div key={friend.id}>{friend.userName}</div>)}
+            <ul className="flex flex-col overflow-y-scroll">
+                {friends.map(friend => 
+                    <div key={friend.id}
+                    onClick={() => openDirectChatRoom(friend.id)}
+                    className="cursor-pointer my-1 hover:underline">{friend.userName}</div>)}
             </ul>
         </div>
     );
